@@ -6,7 +6,7 @@ interface PostCreateArgs {
 }
 
 export const Mutation = {
-    postCreate: async (_:any, {title, content}:any, { prisma }: Context) => {
+    postCreate: async (_:any, {title, content}:PostCreateArgs, { prisma }: Context) => {
         prisma.post.create({
             data: {
                 title,
