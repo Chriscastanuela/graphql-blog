@@ -1,7 +1,7 @@
 import { AuthResolvers } from "./AuthResolvers";
 import { PostResolvers } from "./PostResolvers";
 
-export const Mutations = {
+export const Mutation = {
     ...PostResolvers,
     ...AuthResolvers
 }
