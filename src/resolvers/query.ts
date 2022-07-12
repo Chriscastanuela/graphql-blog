@@ -1,4 +1,4 @@
-import { Context } from "../../src/index";
+import { Context } from "../index";
 
 export const Query = {
     posts: (

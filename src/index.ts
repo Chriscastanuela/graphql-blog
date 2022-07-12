@@ -4,7 +4,7 @@ import { PrismaClient, Prisma } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-import { Query, Mutation } from './resolvers';
+import { Query, Mutations } from './Resolvers';
 
 export interface Context {
     prisma: PrismaClient<Prisma.PrismaClientOptions, never, Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined>
@@ -14,7 +14,7 @@ const server = new ApolloServer({
     typeDefs,
     resolvers: {
         Query,
-        Mutation
+        Mutations
     },
     context: {
         prisma
