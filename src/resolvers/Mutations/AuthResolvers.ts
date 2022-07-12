@@ -1,6 +1,9 @@
 import { Context } from '../../index';
 import validator from 'validator';
 import bcrypt from 'bcryptjs';
+import JWT from 'jsonwebtoken';
+import { UserInputError } from 'apollo-server';
+import { JSON_SIGNATURE } from '../Keys';
 
 interface SignUpArgs {
     email:string
@@ -13,7 +16,7 @@ interface UserPayload {
     userErrors:{
         message:string
     }[];
-    user:null
+    token:string|null
 }
 
 export const AuthResolvers = {
@@ -33,7 +36,7 @@ export const AuthResolvers = {
                         message:"Invalid Email"
                     }
                 ],
-                user:null
+                token:null
             }
         }
 
@@ -47,7 +50,7 @@ export const AuthResolvers = {
                         message:"Invalid Password"
                     }
                 ],
-                user:null
+                token:null
             }
         }
         if(!name || !bio) {
@@ -57,22 +60,28 @@ export const AuthResolvers = {
                         message:"Invalid name or bio"
                     }
                 ],
-                user:null
+                token:null
             }
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        await prisma.user.create({
+        const user = await prisma.user.create({
             data:{
                 email,
                 name,
                 password:hashedPassword
             }
         })
+
+        const token = await JWT.sign({
+            userId:user.id 
+        }, JSON_SIGNATURE,{
+            expiresIn:360000
+        });
         return {
             userErrors:[],
-            user:null
+            token
         }
     }
 }
