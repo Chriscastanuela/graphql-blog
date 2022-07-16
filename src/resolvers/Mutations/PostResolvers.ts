@@ -19,8 +19,17 @@ export const PostResolvers = {
     postCreate: async (
         _:any, 
         { post }:PostArgs, 
-        { prisma }: Context
+        { prisma, userInfo }: Context
     ): Promise<PostPayloadType> => {
+
+        if(!userInfo) {
+            return {
+                userErrors:[{
+                    message: "No access, unauthenticated",
+                }],
+                post:null
+            }
+        }
 
         const { title, content } = post;
 
@@ -43,7 +52,7 @@ export const PostResolvers = {
                 data: {
                     title,
                     content,
-                    authorId:1
+                    authorId:userInfo.userId
                 }
             })
         }
@@ -53,6 +62,7 @@ export const PostResolvers = {
         { post, postId }:{postId:string, post:PostArgs['post']},
         { prisma }: Context
     ): Promise<PostPayloadType> => {
+        
         const { title, content } = post;
         if(!title && !content) {
             return {
